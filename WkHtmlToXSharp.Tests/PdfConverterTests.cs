@@ -71,15 +71,19 @@ namespace WkHtmlToXSharp.Tests
 
 				var tmp = wk.Convert();
 
-				Assert.IsNotEmpty(tmp);
-				var number = 0;
-				lock (this) number = count++;
-				File.WriteAllBytes(@"c:\temp\tmp" + (number) + ".pdf", tmp);
+				Assert.IsNotEmpty(tmp);				
+			    var number = Interlocked.Increment(ref count);				
+			    File.WriteAllBytes(GetTempFileName(number), tmp);
 			}
 		}
 
-		[Test]
-		
+	    private string GetTempFileName(int number)
+	    {
+	        string outputFileName = string.Concat("tmp", number, ".pdf");
+	        return Path.Combine(Path.GetTempPath(), outputFileName);
+	    }
+
+	    [Test]		
 		public void CanConvertFromFile()
 		{
 			_SimpleConversion();
